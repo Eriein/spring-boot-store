@@ -3,8 +3,10 @@ package com.codewithmosh.store.controllers;
 import com.codewithmosh.store.dtos.RegisterUserRequest;
 import com.codewithmosh.store.dtos.UpdateUserRequest;
 import com.codewithmosh.store.dtos.UserDto;
+import com.codewithmosh.store.exception.EmailAlreadyExistException;
 import com.codewithmosh.store.mappers.UserMapper;
 import com.codewithmosh.store.repositories.UserRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +46,18 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody RegisterUserRequest request, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody RegisterUserRequest request, UriComponentsBuilder uriBuilder)throws EmailAlreadyExistException {
+
+        if(userRepository.existsByEmail(request.getEmail())) {
+             throw new EmailAlreadyExistException("Email is already registered.");
+        }
+
         var user = userMapper.toEntity(request);
         userRepository.save(user);
-        var userDto = userMapper.toDto(user);
 
+        var userDto = userMapper.toDto(user);
         var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
+
         return ResponseEntity.created(uri).body(userDto);
     }
 
