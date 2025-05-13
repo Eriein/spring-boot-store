@@ -7,5 +7,5 @@ import lombok.Data;
 @Data
 public class AddItemToCartRequest {
     @NotNull
-    private Long id;
+    private Long productId;
 }
