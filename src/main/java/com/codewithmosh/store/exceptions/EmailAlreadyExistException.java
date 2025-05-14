@@ -1,4 +1,4 @@
-package com.codewithmosh.store.exception;
+package com.codewithmosh.store.exceptions;
 
 public class EmailAlreadyExistException extends RuntimeException {
   public EmailAlreadyExistException(String message) {

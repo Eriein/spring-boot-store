@@ -3,7 +3,7 @@ package com.codewithmosh.store.controllers;
 import com.codewithmosh.store.dtos.RegisterUserRequest;
 import com.codewithmosh.store.dtos.UpdateUserRequest;
 import com.codewithmosh.store.dtos.UserDto;
-import com.codewithmosh.store.exception.EmailAlreadyExistException;
+import com.codewithmosh.store.exceptions.EmailAlreadyExistException;
 import com.codewithmosh.store.mappers.UserMapper;
 import com.codewithmosh.store.repositories.UserRepository;
 import jakarta.validation.Valid;
