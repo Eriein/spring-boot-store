@@ -5,6 +5,7 @@ import com.codewithmosh.store.entities.Product;
 import com.codewithmosh.store.mappers.ProductMapper;
 import com.codewithmosh.store.repositories.CategoryRepository;
 import com.codewithmosh.store.repositories.ProductRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @RequestMapping("/products")
+@Tag(name = "Products")
 public class ProductController {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
