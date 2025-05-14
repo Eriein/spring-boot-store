@@ -26,6 +26,7 @@ public class CartController {
     private final CartRepository cartRepository;
     private final CartMapper cartMapper;
     private final ProductRepository productRepository;
+    private static final String ERROR_CONSTANT = "error";
 
     @PostMapping
     public ResponseEntity<CartDto> createCart(
@@ -80,14 +81,14 @@ public class CartController {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if(cart == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Map.of("error", "cart not found.")
+                    Map.of(ERROR_CONSTANT, "cart not found.")
             );
         }
 
         var cartItem = cart.getItem(productId);
         if (cartItem == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Map.of("error", "product was not found in the cart.")
+                    Map.of(ERROR_CONSTANT, "product was not found in the cart.")
             );
         }
         var quantity = request.getQuantity();
@@ -96,5 +97,35 @@ public class CartController {
 
         var cartItemDto = cartMapper.toDto(cartItem);
         return ResponseEntity.ok(cartItemDto);
+    }
+    @DeleteMapping("/{cartId}/items/{productId}")
+    public ResponseEntity<Object> removeItem(
+            @PathVariable("cartId") UUID cartId,
+            @PathVariable("productId") Long productId
+    ) {
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
+        if(cart == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    Map.of(ERROR_CONSTANT, "Cart was not found")
+            );
+        }
+
+        cart.removeItem(productId);
+        cartRepository.save(cart);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{cartId}/items")
+    public ResponseEntity<Object> clearCart(@PathVariable("cartId") UUID cartId) {
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
+        if(cart == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    Map.of(ERROR_CONSTANT, "Cart was not found")
+            );
+        }
+
+        cart.clearCart();
+        cartRepository.save(cart);
+        return ResponseEntity.noContent().build();
     }
 }
