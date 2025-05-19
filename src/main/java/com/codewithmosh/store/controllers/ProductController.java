@@ -1,10 +1,11 @@
 package com.codewithmosh.store.controllers;
 
 import com.codewithmosh.store.dtos.ProductDto;
-import com.codewithmosh.store.entities.Product;
 import com.codewithmosh.store.mappers.ProductMapper;
 import com.codewithmosh.store.repositories.CategoryRepository;
 import com.codewithmosh.store.repositories.ProductRepository;
+import com.codewithmosh.store.services.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,43 +23,25 @@ import java.util.List;
 public class ProductController {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductService productService;
     private ProductMapper productMapper;
 
     @GetMapping
+    @Operation(summary = "Get all products")
     public List<ProductDto> getAllProducts(@RequestParam(required = false, name = "categoryId") Byte categoryId ) {
-        List<Product> products;
-        if(categoryId != null) {
-            products = productRepository.findByCategoryId(categoryId);
-        }else {
-            products = productRepository.findAllWithCategory();
-        }
-        return products.stream()
-                .map(productMapper::toDto)
-                .toList();
+        return productService.getAllProducts(categoryId);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
-        var product = productRepository.findById(id).orElse(null);
-        if(product == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(productMapper.toDto(product));
+    public ProductDto getProduct(@PathVariable Long id) {
+        return productService.getProduct(id);
     }
 
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, UriComponentsBuilder uriBuilder) {
-        var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
-        if(category == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        var product = productMapper.toEntity(productDto);
-        product.setId(productDto.getId());
-        product.setCategory(category);
-
-        productRepository.save(product);
-        var uri = uriBuilder.path("/products/{id}").buildAndExpand(productDto.getId()).toUri();
-        return ResponseEntity.created(uri).body(productDto);
+        var createProductDto = productService.createProduct(productDto);
+        var uri = uriBuilder.path("/products/{id}").buildAndExpand(createProductDto.getId()).toUri();
+        return ResponseEntity.created(uri).body(createProductDto);
     }
 
     @PutMapping("/{id}")

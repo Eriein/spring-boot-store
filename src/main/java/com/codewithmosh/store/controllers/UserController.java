@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody RegisterUserRequest request, UriComponentsBuilder uriBuilder)throws EmailAlreadyExistException {
+    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody RegisterUserRequest request, UriComponentsBuilder uriBuilder) {
 
         if(userRepository.existsByEmail(request.getEmail())) {
              throw new EmailAlreadyExistException("Email is already registered.");
