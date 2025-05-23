@@ -56,6 +56,7 @@ public class SecurityConfig {
                                 .requestMatchers("/carts/**").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/users").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/auth/refresh").permitAll()
                                 .anyRequest().authenticated()
                         ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
