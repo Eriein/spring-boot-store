@@ -1,7 +1,6 @@
 package com.codewithmosh.store.services;
 
 import com.codewithmosh.store.config.JwtConfig;
-import com.codewithmosh.store.entities.Role;
 import com.codewithmosh.store.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -16,45 +15,24 @@ import java.util.Date;
 public class JwtService {
     private final JwtConfig jwtConfig;
 
-    public String generateAccessToken(User user) {
+    public Jwt generateAccessToken(User user) {
         return generateToken(user, jwtConfig.getAccessTokenExpiration());
     }
 
-    public String generateRefreshToken(User user) {
+    public Jwt generateRefreshToken(User user) {
         return generateToken(user, jwtConfig.getRefreshTokenExpiration());
     }
 
-    public String generateToken(User user, long tokenExpiration) {
-        return Jwts.builder()
+    public Jwt generateToken(User user, long tokenExpiration) {
+        var claims = Jwts.claims()
                 .subject(user.getId().toString())
-                .claim("name", user.getName())
-                .claim("email", user.getEmail())
-                .claim("role", user.getRole())
+                .add("email", user.getEmail())
+                .add("name", user.getName())
+                .add("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
-                .signWith(jwtConfig.getSecretKey())
-                .compact();
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            var claims = getClaims(token);
-            return claims.getExpiration().after(new Date());
-        }catch (JwtException ex) {
-            return false;
-        }
-
-
-    }
-
-    public Long getUserIdFromToken(String token) {
-        var claims = getClaims(token);
-        return Long.valueOf(claims.getSubject());
-    }
-
-    public Role getRoleFromToken(String token) {
-        var claims = getClaims(token);
-        return Role.valueOf(claims.get("role", String.class));
+                .build();
+        return new Jwt(claims, jwtConfig.getSecretKey());
     }
 
     private Claims getClaims(String token) {
@@ -63,5 +41,13 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public Jwt parse(String token) {
+        try {
+            return new Jwt(getClaims(token), jwtConfig.getSecretKey());
+        }catch (JwtException e) {
+            return null;
+        }
     }
 }
