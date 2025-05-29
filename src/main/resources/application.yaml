@@ -11,3 +11,6 @@ spring:
     secret: ${JWT_SECRET}
     AccessTokenExpiration: 7200 # 5m
     RefreshTokenExpiration: 604800 # 7d
+  stripe:
+    secretKey: ${STRIPE_SECRET_KEY}
+  websiteUrl: http://localhost:4242
