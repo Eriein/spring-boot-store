@@ -1,16 +1,19 @@
 package com.codewithmosh.store.exceptions;
 
+import com.codewithmosh.store.carts.CartNotFoundException;
 import com.codewithmosh.store.dtos.ErrorDto;
+import com.codewithmosh.store.products.CategoryNotFoundException;
+import com.codewithmosh.store.products.ProductNotFoundException;
+import com.codewithmosh.store.users.EmailAlreadyExistException;
+import com.codewithmosh.store.users.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
