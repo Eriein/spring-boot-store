@@ -14,7 +14,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserMapper userMapper;
 
     public User getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();

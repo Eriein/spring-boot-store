@@ -3,7 +3,6 @@ package com.codewithmosh.store.auth;
 import com.codewithmosh.store.users.UserDto;
 import com.codewithmosh.store.users.UserMapper;
 import com.codewithmosh.store.users.UserNotFoundException;
-import com.codewithmosh.store.users.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthController {
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final AuthService authService;
     private final JwtConfig jwtConfig;
