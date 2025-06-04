@@ -3,6 +3,8 @@ package com.codewithmosh.store.payments;
 import com.codewithmosh.store.common.ErrorDto;
 import com.codewithmosh.store.carts.CartEmptyException;
 import com.codewithmosh.store.carts.CartNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,17 +16,20 @@ import java.util.Map;
 @RestController
 @RequestMapping("/checkout")
 @RequiredArgsConstructor
+@Tag(name = "Checkout")
 public class CheckoutController {
     private final CheckoutService checkoutService;
 
 
     @PostMapping
+    @Operation(summary = "Create a checkout session")
     public CheckoutResponse checkout(@Valid @RequestBody CheckoutRequest request) {
         return checkoutService.checkout(request);
     }
 
 
     @PostMapping("/webhook")
+    @Operation(summary = "Handle a webhook event")
     public void handleWebhook(
             @RequestHeader Map<String, String> headers,
             @RequestBody String payload

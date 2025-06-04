@@ -3,6 +3,8 @@ package com.codewithmosh.store.auth;
 import com.codewithmosh.store.users.UserDto;
 import com.codewithmosh.store.users.UserMapper;
 import com.codewithmosh.store.users.UserNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
+@Tag(name = "Authentication")
 public class AuthController {
     private final UserMapper userMapper;
     private final AuthService authService;
@@ -20,6 +23,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
+    @Operation(summary = "Login")
     public JwtResponse login(
             @Valid @RequestBody LoginRequest request,
             HttpServletResponse response) {
@@ -39,6 +43,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
+    @Operation(summary = "Get current user")
     public ResponseEntity<UserDto> me() {
         var user = authService.getCurrentUser();
         if(user == null) {
@@ -49,6 +54,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
+    @Operation(summary = "Refresh access token")
     public JwtResponse refresh(
             @CookieValue(value = "refreshToken") String token) {
         var accessToken = authService.refreshAccessToken(token).toString();

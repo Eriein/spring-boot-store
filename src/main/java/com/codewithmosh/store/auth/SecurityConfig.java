@@ -56,6 +56,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)// disable csrf
                 .authorizeHttpRequests(c -> c
                                 .requestMatchers("/carts/**").permitAll()
+                                .requestMatchers(
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
+                                ).permitAll()
                                 .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST,"/users").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
