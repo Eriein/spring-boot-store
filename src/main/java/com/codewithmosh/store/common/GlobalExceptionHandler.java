@@ -1,7 +1,6 @@
-package com.codewithmosh.store.exceptions;
+package com.codewithmosh.store.common;
 
 import com.codewithmosh.store.carts.CartNotFoundException;
-import com.codewithmosh.store.dtos.ErrorDto;
 import com.codewithmosh.store.products.CategoryNotFoundException;
 import com.codewithmosh.store.products.ProductNotFoundException;
 import com.codewithmosh.store.users.EmailAlreadyExistException;

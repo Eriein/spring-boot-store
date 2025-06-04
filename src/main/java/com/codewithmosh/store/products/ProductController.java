@@ -16,10 +16,7 @@ import java.util.List;
 @RequestMapping("/products")
 @Tag(name = "Products")
 public class ProductController {
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
     private final ProductService productService;
-    private ProductMapper productMapper;
 
     @GetMapping
     @Operation(summary = "Get all products")
@@ -28,42 +25,32 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get product by id")
     public ProductDto getProduct(@PathVariable Long id) {
         return productService.getProduct(id);
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, UriComponentsBuilder uriBuilder) {
-        var createProductDto = productService.createProduct(productDto);
-        var uri = uriBuilder.path("/products/{id}").buildAndExpand(createProductDto.getId()).toUri();
-        return ResponseEntity.created(uri).body(createProductDto);
+    @Operation(summary = "Create product")
+    public ResponseEntity<ProductDto> createProduct(@RequestBody CreateProductDto createProductDto, UriComponentsBuilder uriBuilder) {
+        var productDto = productService.createProduct(createProductDto);
+        var uri = uriBuilder.path("/products/{id}").buildAndExpand(productDto.getId()).toUri();
+        return ResponseEntity.created(uri).body(productDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
-        var product = productRepository.findById(id).orElse(null);
-        if(product == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
-        if(category == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        productMapper.update(product, productDto);
-        product.setCategory(category);
-        productRepository.save(product);
-
-        return ResponseEntity.ok(productDto);
+    @Operation(summary = "Update product")
+    public ResponseEntity<ProductDto> updateProduct(
+            @PathVariable Long id,
+            @RequestBody ProductDto productDto) {
+        var updateProductDto = productService.updateProduct(id, productDto);
+        return ResponseEntity.ok(updateProductDto);
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete product")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        var product = productRepository.findById(id).orElse(null);
-        if(product == null) {
-            return ResponseEntity.notFound().build();
-        }
-        productRepository.delete(product);
+        productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
 }

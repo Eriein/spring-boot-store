@@ -9,7 +9,7 @@ public interface ProductMapper {
     @Mapping(source = "category.id", target = "categoryId")
     ProductDto toDto(Product product);
 
-    Product toEntity(ProductDto productDto);
+    Product toEntity(CreateProductDto productDto);
 
 
     @Mapping(target = "id", ignore = true)

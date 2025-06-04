@@ -32,16 +32,40 @@ public class ProductService {
         return productMapper.toDto(product);
     }
 
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductDto createProduct(CreateProductDto productDto) {
         var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
         if(category == null) {
             throw new CategoryNotFoundException();
         }
         var product = productMapper.toEntity(productDto);
-        product.setId(productDto.getId());
         product.setCategory(category);
 
         productRepository.save(product);
         return productMapper.toDto(product);
+    }
+
+    public ProductDto updateProduct(Long id, ProductDto productDto) {
+        var product = productRepository.findById(id).orElse(null);
+        if(product == null) {
+            throw new ProductNotFoundException();
+        }
+
+        var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
+        if(category == null) {
+            throw new CategoryNotFoundException();
+        }
+        productMapper.update(product, productDto);
+        product.setCategory(category);
+        productRepository.save(product);
+
+        return productMapper.toDto(product);
+    }
+
+    public void deleteProduct(Long id) {
+        var product = productRepository.findById(id).orElse(null);
+        if(product == null) {
+            throw new ProductNotFoundException();
+        }
+        productRepository.delete(product);
     }
 }
